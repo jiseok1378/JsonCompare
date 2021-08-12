@@ -1,0 +1,6 @@
+
+
+{
+    "COYOTE_LANGUAGE" : [ "~/git/Coyote/src/renderer/i18n/en-US.json", "~/git/Coyote/src/renderer/i18n/jp-JA.json", "~/git/Coyote/src/renderer/i18n/ko-KR.json" ],
+    "MERCURY_LANGUAGE" : []
+}

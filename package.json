@@ -1,0 +1,11 @@
+{
+  "name": "checkLanguage",
+  "version": "1.0.0",
+  "main": "index.js",
+  "license": "MIT",
+  "type": "module",
+  "dependencies": {
+    "@vitalets/google-translate-api": "^7.0.0",
+    "google-translate-api": "^2.3.0"
+  }
+}
