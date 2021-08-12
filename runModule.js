@@ -13,14 +13,14 @@ const checkFlag = {
 }
 let optionFlag = {
     showingValue : {
-        option : "!v",
+        option : ["-v", "-value"],
         flag : false
     }
 }
 process.argv.map(arg=>arg.toLowerCase()).forEach(arg=>{
     switch(arg){
-        case "!v" :
-        case "!value" : optionFlag.showingValue.flag = true;
+        case "-v" :
+        case "-value" : optionFlag.showingValue.flag = true;
             break;
     }
 })
