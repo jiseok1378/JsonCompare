@@ -17,7 +17,7 @@ JSON file settings to compare
   
 ```json
 {
-    "TestFile" : ["./test1.json", "./test2.json", "./test3.json"],
+    "TestFile" : ["./test1.json", "./test2.json", "./test3.json", "./test4.json"],
     "TestFileNone" : []
 }
 ```
