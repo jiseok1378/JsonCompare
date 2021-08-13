@@ -60,7 +60,7 @@ const replaceHomePathAddAndExistFileter = (fileList) =>{
                                 return false;
                             } 
                         });
-    debugLog("replaceHomePathAddAndExistFileter",`debug ret\n${ret}`);
+    debugLog("replaceHomePathAddAndExistFileter",`debug ret\n${util.inspect(ret, objectConsoleOption)}`);
     return ret;
 }
 const initFiles = (fileList) =>{
@@ -69,13 +69,13 @@ const initFiles = (fileList) =>{
                             json:JSON.parse(fs.readFileSync(file).toString()), 
                             flag : checkFlag.NON_CHECK
                         }));
-    debugLog("initFiles", `debug ret\n${ret}`)
+    debugLog("initFiles", `debug ret\n${util.inspect(ret, objectConsoleOption)}`)
     return ret;
     
 }
 
 const switchTargetFile = (files,index) => {
-    debugLog("switchTargetFile",`debug files\n${files}\n\ndebug index ${index}`)
+    debugLog("switchTargetFile",`debug files\n${util.inspect(files, objectConsoleOption)}\n\ndebug index ${index}`)
     files[index].flag = checkFlag.TARGET;
     return files;
 }
