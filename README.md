@@ -1,6 +1,6 @@
 # JsonCompare
 
-install dependencies : **yarn install**
+Install dependencies : **yarn install**
 
 Usage : **node runModule.js**
 
