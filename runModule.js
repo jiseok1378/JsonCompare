@@ -8,7 +8,6 @@ const log = console.log;
 const langFileList = Object.values(JSON.parse(fs.readFileSync('./targetFileList.json')))
 const langFileKey = Object.keys(JSON.parse(fs.readFileSync('./targetFileList.json')))
 
-
 const checkFlag = {
     TARGET : 'TARGET',
     CHECK : "CHECK",
@@ -22,6 +21,10 @@ let optionFlag = {
     fullPath :{
         option : ["-p", "-path"],
         flag : false
+    },
+    debug : {
+        option : ["-debug"],
+        flag : false
     }
 }
 let findFlag = false;
@@ -34,27 +37,42 @@ process.argv.map(arg=>arg.toLowerCase()).forEach(arg=>{
         case '-p':
         case '-path': optionFlag.fullPath.flag = true; 
             break;
+        case '-debug' : optionFlag.debug.flag = true; 
+            break;
     }
 })
-
+const debugLog = (functionName, msg)=>{
+    if(optionFlag.debug.flag){
+        log(chalk.red(`\n==================( ${functionName} )==================`))
+        log(msg)
+        log(chalk.red(`==================( ${functionName} )==================\n`))
+    }  
+}
+const replaceHomePathAddAndExistFileter = (fileList) =>{
+    const ret = fileList.map(file=>file.replace(/\~/g,os.homedir()))
+                        .filter(file=>{
+                            if(fs.existsSync(file)) return true;
+                            else{
+                                log(`${chalk.red(`\nError:`)} Not exist file "${file}"`)
+                                return false;
+                            } 
+                        });
+    debugLog("replaceHomePathAddAndExistFileter",`debug ret\n${ret}`);
+    return ret;
+}
 const initFiles = (fileList) =>{
-    return fileList.map(file=>file.replace(/\~/g,os.homedir()))
-                .filter(file=>{
-                    if(fs.existsSync(file)) return true;
-                    else{
-                        log(`${chalk.red(`\nError:`)} Not exist file "${file}"`)
-                        return false;
-                    } 
-                })
-                .map(file=>({
-                    fileName:file,
-                    json:JSON.parse(fs.readFileSync(file).toString()), 
-                    flag : checkFlag.NON_CHECK
-                }));
+    const ret = fileList.map(file=>({
+                            fileName:file,
+                            json:JSON.parse(fs.readFileSync(file).toString()), 
+                            flag : checkFlag.NON_CHECK
+                        }));
+    debugLog("initFiles", `debug ret\n${ret}`)
+    return ret;
     
 }
 
 const switchTargetFile = (files,index) => {
+    debugLog("switchTargetFile",`debug files\n${files}\n\ndebug index ${index}`)
     files[index].flag = checkFlag.TARGET;
     return files;
 }
@@ -86,13 +104,14 @@ const checkLanguage = (checkTagetFile, noneFiles, langKey) =>{
     for(let i = 0; i < noneFiles.length; i++){
         findFlag = false;
         checkInner(checkTagetFile.json, noneFiles[i].json, noneFiles[i].fileName, '');
-        
     }
     if(!findFlag) console.log("No missing key found.")    
 }
 const runCheckLanguageFileInner = (langFiles, langKey)=>{
-    for(let i = 0; i < langFiles.length; i++){
-        let checkingFiles = initFiles(langFiles);
+    if(langFiles.length == 0) return 
+    const replaceAndFilter = replaceHomePathAddAndExistFileter(langFiles);
+    for(let i = 0; i < replaceAndFilter.length; i++){
+        const checkingFiles = initFiles(replaceAndFilter);
         if(checkingFiles.length == 0) return 
         const switchedFile = switchTargetFile(checkingFiles,i);
         checkLanguage(
