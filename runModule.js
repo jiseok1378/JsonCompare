@@ -39,11 +39,19 @@ process.argv.map(arg=>arg.toLowerCase()).forEach(arg=>{
 
 const initFiles = (fileList) =>{
     return fileList.map(file=>file.replace(/\~/g,os.homedir()))
+                .filter(file=>{
+                    if(fs.existsSync(file)) return true;
+                    else{
+                        log(`${chalk.red(`\nError:`)} Not exist file "${file}"`)
+                        return false;
+                    } 
+                })
                 .map(file=>({
                     fileName:file,
                     json:JSON.parse(fs.readFileSync(file).toString()), 
                     flag : checkFlag.NON_CHECK
                 }));
+    
 }
 
 const switchTargetFile = (files,index) => {
@@ -85,6 +93,7 @@ const checkLanguage = (checkTagetFile, noneFiles, langKey) =>{
 const runCheckLanguageFileInner = (langFiles, langKey)=>{
     for(let i = 0; i < langFiles.length; i++){
         let checkingFiles = initFiles(langFiles);
+        if(checkingFiles.length == 0) return 
         const switchedFile = switchTargetFile(checkingFiles,i);
         checkLanguage(
             switchedFile.filter(x=>x.flag == checkFlag.TARGET)[0],
