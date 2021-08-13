@@ -1,6 +1,7 @@
 
 import fs from 'fs'
 import os from 'os'
+import path from 'path'
 
 const langFileList = Object.values(JSON.parse(fs.readFileSync('./targetFileList.json')))
 const langFileKey = Object.keys(JSON.parse(fs.readFileSync('./targetFileList.json')))
@@ -15,12 +16,19 @@ let optionFlag = {
     showingValue : {
         option : ["-v", "-value"],
         flag : false
+    },
+    fullPath :{
+        option : ["-p", "-path"],
+        flag : false
     }
 }
 process.argv.map(arg=>arg.toLowerCase()).forEach(arg=>{
     switch(arg){
         case "-v" :
         case "-value" : optionFlag.showingValue.flag = true;
+            break;
+        case '-p':
+        case '-path': optionFlag.fullPath.flag = true; 
             break;
     }
 })
@@ -42,8 +50,9 @@ const checkInner = (checkTagetFile, noneFile, fileName, preKey) => {
     if(noneFile != null){
         const notFoundKeys = Object.keys(checkTagetFile).filter(x=>!Object.keys(noneFile).includes(x));
         if(notFoundKeys.length != 0) notFoundKeys.forEach((notFoundKey)=>{
-            console.log(`\x1b[34m[${fileName}]\x1b[0m NOT FOUND KEY: ${preKey+ (preKey === ''? "" : ".") +notFoundKey}`)
-            if(optionFlag.showingValue.flag) console.log(`[${fileName}]  KEY OF VALUE: ${checkTagetFile[notFoundKey]}`)
+            const pureFileName = fileName.split(path.sep)[fileName.split(path.sep).length - 1]
+            console.log(`\x1b[34m[${optionFlag.fullPath.flag ? fileName : pureFileName}]\x1b[0m NOT FOUND KEY: ${preKey+ (preKey === ''? "" : ".") +notFoundKey}`)
+            if(optionFlag.showingValue.flag) console.log(`[${optionFlag.fullPath.flag ? fileName : pureFileName}]  KEY OF VALUE: ${checkTagetFile[notFoundKey]}`)
         })
     }
     Object.keys(checkTagetFile).forEach((key)=>{
