@@ -51,7 +51,7 @@ const debugLog = (functionName, msg)=>{
         log(chalk.red(`==================( ${functionName} )==================\n`))
     }  
 }
-const replaceHomePathAddAndExistFileter = (fileList) =>{
+const replaceHomePathAddAndExistFilter = (fileList) =>{
     const ret = fileList.map(file=>file.replace(/\~/g,os.homedir()))
                         .filter(file=>{
                             if(fs.existsSync(file)) return true;
@@ -60,7 +60,7 @@ const replaceHomePathAddAndExistFileter = (fileList) =>{
                                 return false;
                             } 
                         });
-    debugLog("replaceHomePathAddAndExistFileter",`debug ret\n${util.inspect(ret, objectConsoleOption)}`);
+    debugLog("replaceHomePathAddAndExistFilter",`debug ret\n${util.inspect(ret, objectConsoleOption)}`);
     return ret;
 }
 const initFiles = (fileList) =>{
@@ -121,7 +121,7 @@ const checkLanguage = (checkTargetFile, noneFiles, langKey) =>{
 }
 const runCheckLanguageFileInner = (langFiles, langKey)=>{
     if(langFiles.length == 0) return 
-    const replaceAndFilter = replaceHomePathAddAndExistFileter(langFiles);
+    const replaceAndFilter = replaceHomePathAddAndExistFilter(langFiles);
     for(let i = 0; i < replaceAndFilter.length; i++){
         const checkingFiles = initFiles(replaceAndFilter);
         if(checkingFiles.length == 0) return 
