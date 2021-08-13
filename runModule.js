@@ -1,8 +1,8 @@
 
-import fs from 'fs'
-import os from 'os'
-import path from 'path'
-import chalk from 'chalk'
+const fs =  require('fs');
+const os = require('os')
+const path = require('path')
+const chalk = require('chalk')
 const log = console.log;
 
 const langFileList = Object.values(JSON.parse(fs.readFileSync('./targetFileList.json')))
@@ -27,7 +27,6 @@ let optionFlag = {
         flag : false
     }
 }
-let findFlag = false;
 
 process.argv.map(arg=>arg.toLowerCase()).forEach(arg=>{
     switch(arg){
@@ -97,12 +96,14 @@ const checkInner = (checkTagetFile, noneFile, fileName, preKey) => {
             checkInner(checkTagetFile[key], noneFile[key], fileName, currentIndex)
         }
     })
-}
 
+}
+let findFlag = false; 
 const checkLanguage = (checkTagetFile, noneFiles, langKey) =>{
+
     log(chalk.gray(`\n[Compare] TARGET: ${checkTagetFile.fileName}`))
     for(let i = 0; i < noneFiles.length; i++){
-        findFlag = false;
+        
         checkInner(checkTagetFile.json, noneFiles[i].json, noneFiles[i].fileName, '');
     }
     if(!findFlag) console.log("No missing key found.")    
@@ -121,6 +122,7 @@ const runCheckLanguageFileInner = (langFiles, langKey)=>{
 }
 const runCheckLanguageFile = ()=>{
     for(let i = 0; i < langFileList.length; i++){
+        log(chalk.yellow(`\nSequence: ${langFileKey[i]}`))
         runCheckLanguageFileInner(langFileList[i], langFileKey[i])
     }
 
