@@ -1,6 +1,8 @@
 # JsonCompare
 
-Usage : node runModule.js
+install dependencies : **yarn install**
+
+Usage : **node runModule.js**
 
 - option   
   1.  -v or -value : showing value 
@@ -19,3 +21,5 @@ JSON file settings to compare
     "TestFileNone" : []
 }
 ```
+
+![](./static/example.png)
