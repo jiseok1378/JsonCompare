@@ -2,6 +2,8 @@
 import fs from 'fs'
 import os from 'os'
 import path from 'path'
+import chalk from 'chalk'
+const log = console.log;
 
 const langFileList = Object.values(JSON.parse(fs.readFileSync('./targetFileList.json')))
 const langFileKey = Object.keys(JSON.parse(fs.readFileSync('./targetFileList.json')))
@@ -22,6 +24,8 @@ let optionFlag = {
         flag : false
     }
 }
+let findFlag = false;
+
 process.argv.map(arg=>arg.toLowerCase()).forEach(arg=>{
     switch(arg){
         case "-v" :
@@ -32,6 +36,7 @@ process.argv.map(arg=>arg.toLowerCase()).forEach(arg=>{
             break;
     }
 })
+
 const initFiles = (fileList) =>{
     return fileList.map(file=>file.replace(/\~/g,os.homedir()))
                 .map(file=>({
@@ -50,10 +55,12 @@ const checkInner = (checkTagetFile, noneFile, fileName, preKey) => {
     if(noneFile != null){
         const notFoundKeys = Object.keys(checkTagetFile).filter(x=>!Object.keys(noneFile).includes(x));
         if(notFoundKeys.length != 0) notFoundKeys.forEach((notFoundKey)=>{
+            findFlag = true
             const pureFileName = fileName.split(path.sep)[fileName.split(path.sep).length - 1]
-            console.log(`\x1b[34m[${optionFlag.fullPath.flag ? fileName : pureFileName}]\x1b[0m NOT FOUND KEY: ${preKey+ (preKey === ''? "" : ".") +notFoundKey}`)
-            if(optionFlag.showingValue.flag) console.log(`[${optionFlag.fullPath.flag ? fileName : pureFileName}]  KEY OF VALUE: ${checkTagetFile[notFoundKey]}`)
-        })
+            log(`[${chalk.blue.bold(optionFlag.fullPath.flag ? fileName : pureFileName)}] MSSING KEY: ${preKey+ (preKey === ''? "" : ".") +notFoundKey}`)
+            if(optionFlag.showingValue.flag)
+                log(`[${chalk.blue.bold(optionFlag.fullPath.flag ? fileName : pureFileName)}] MSSING VAL: ${checkTagetFile[notFoundKey]}\n`)
+        })  
     }
     Object.keys(checkTagetFile).forEach((key)=>{
         if(checkTagetFile[key] == undefined || checkTagetFile[key] == null || noneFile[key] == null){
@@ -67,11 +74,13 @@ const checkInner = (checkTagetFile, noneFile, fileName, preKey) => {
 }
 
 const checkLanguage = (checkTagetFile, noneFiles, langKey) =>{
-    console.log(`\n\x1b[32m============================( ${checkTagetFile.fileName} )============================\x1b[0m`)
+    log(chalk.gray(`\n[Compare] TARGET: ${checkTagetFile.fileName}`))
     for(let i = 0; i < noneFiles.length; i++){
-        checkInner(checkTagetFile.json, noneFiles[i].json, noneFiles[i].fileName, '');    
+        findFlag = false;
+        checkInner(checkTagetFile.json, noneFiles[i].json, noneFiles[i].fileName, '');
+        
     }
-    console.log(`\x1b[32m============================( ${checkTagetFile.fileName} )============================\x1b[0m`)
+    if(!findFlag) console.log("No missing key found.")    
 }
 const runCheckLanguageFileInner = (langFiles, langKey)=>{
     for(let i = 0; i < langFiles.length; i++){
