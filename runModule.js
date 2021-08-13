@@ -77,11 +77,11 @@ const switchTargetFile = (files,index) => {
 }
 
 const checkInner = (checkTagetFile, noneFile, fileName, preKey) => {
+    const pureFileName = fileName.split(path.sep)[fileName.split(path.sep).length - 1]
     if(noneFile != null){
-        const notFoundKeys = Object.keys(checkTagetFile).filter(x=>!Object.keys(noneFile).includes(x));
+        const notFoundKeys = Object.keys(checkTagetFile).filter(x=>!Object.keys(noneFile).includes(x)); // 못찾은 key list
         if(notFoundKeys.length != 0) notFoundKeys.forEach((notFoundKey)=>{
             findFlag = true
-            const pureFileName = fileName.split(path.sep)[fileName.split(path.sep).length - 1]
             log(`[${chalk.blue.bold(optionFlag.fullPath.flag ? fileName : pureFileName)}] MSSING KEY: ${preKey+ (preKey === ''? "" : ".") +notFoundKey}`)
             if(optionFlag.showingValue.flag)
                 log(`[${chalk.blue.bold(optionFlag.fullPath.flag ? fileName : pureFileName)}] MSSING VAL: ${checkTagetFile[notFoundKey]}\n`)
@@ -103,10 +103,11 @@ const checkLanguage = (checkTagetFile, noneFiles, langKey) =>{
 
     log(chalk.gray(`\n[Compare] TARGET: ${checkTagetFile.fileName}`))
     for(let i = 0; i < noneFiles.length; i++){
-        
+        debugLog("checkLanguage", findFlag)
         checkInner(checkTagetFile.json, noneFiles[i].json, noneFiles[i].fileName, '');
     }
-    if(!findFlag) console.log("No missing key found.")    
+    if(!findFlag) console.log("Message : No missing key found.")    
+    findFlag = false
 }
 const runCheckLanguageFileInner = (langFiles, langKey)=>{
     if(langFiles.length == 0) return 
@@ -117,7 +118,8 @@ const runCheckLanguageFileInner = (langFiles, langKey)=>{
         const switchedFile = switchTargetFile(checkingFiles,i);
         checkLanguage(
             switchedFile.filter(x=>x.flag == checkFlag.TARGET)[0],
-            switchedFile.filter(x=>x.flag == checkFlag.NON_CHECK), langKey)
+            switchedFile.filter(x=>x.flag == checkFlag.NON_CHECK), 
+            langKey);
      }
 }
 const runCheckLanguageFile = ()=>{
