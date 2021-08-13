@@ -106,7 +106,7 @@ const checkLanguage = (checkTagetFile, noneFiles, langKey) =>{
         debugLog("checkLanguage", findFlag)
         checkInner(checkTagetFile.json, noneFiles[i].json, noneFiles[i].fileName, '');
     }
-    if(!findFlag) console.log("Message : No missing key found.")    
+    if(!findFlag) console.log(chalk.green("Message : No missing key found."))    
     findFlag = false
 }
 const runCheckLanguageFileInner = (langFiles, langKey)=>{
